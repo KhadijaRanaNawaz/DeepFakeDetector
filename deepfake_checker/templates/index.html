@@ -13,26 +13,35 @@
 </head>
 <body class="bg-light">
     <div class="container py-5">
+        <div class="border border-5 border-primary rounded p-4 mb-4 bg-light">
         <h1 class="mb-4 text-center">DeepFake Image Checker</h1>
+        </div>
         <div class="row">
             {% for image in config %}
-            <div class="row mb-4">
+            <div class="row mb-4">                
+                <div class="d-flex align-items-start gap-4">
+                    <!-- Left: Deepfake image and controls -->
                     <div class="card shadow-sm flex p-3 card-img-top">
                         <img src="{{ url_for('static', filename='../' + image.deepfake_image) }}"  alt="Uploaded Image">
                         <button class="btn btn-primary my-2" onclick="checkImage('{{ image.deepfake_image }}')">DeepFake Check</button>
-                        <div> 
-                            <svg id="check-{{ image.deepfake_image }}" class="status-icon" fill="none" stroke="green" stroke-width="4" viewBox="0 0 16 16">
-                                <path d="M13.485 1.929a.75.75 0 011.06 1.06l-8.25 8.25a.75.75 0 01-1.06 0l-4.25-4.25a.75.75 0 111.06-1.06L6 9.189l7.485-7.26z"/>
-                            </svg>                        
-                            <svg id="cross-{{ image.deepfake_image }}" class="status-icon" fill="none" stroke="red" stroke-width="4" viewBox="0 0 16 16">
-                                <path d="M4.646 4.646a.5.5 0 01.708 0L8 7.293l2.646-2.647a.5.5 0 11.708.708L8.707 8l2.647 2.646a.5.5 0 01-.708.708L8 8.707l-2.646 2.647a.5.5 0 01-.708-.708L7.293 8 4.646 5.354a.5.5 0 010-.708z"/>
-                            </svg>                            
-                        </div>                                           
+                        <div id="outer-{{ image.deepfake_image }}" style="display: none;">
+                            <div class="d-flex justify-content-center gap-2 bg-warning p-2 rounded"> 
+                                <svg id="check-{{ image.deepfake_image }}" class="status-icon" fill="none" stroke="green" stroke-width="4" viewBox="0 0 16 16">
+                                    <path d="M13.485 1.929a.75.75 0 011.06 1.06l-8.25 8.25a.75.75 0 01-1.06 0l-4.25-4.25a.75.75 0 111.06-1.06L6 9.189l7.485-7.26z"/>
+                                </svg>                        
+                                <svg id="cross-{{ image.deepfake_image }}" class="status-icon" fill="none" stroke="red" stroke-width="4" viewBox="0 0 16 16">
+                                    <path d="M4.646 4.646a.5.5 0 01.708 0L8 7.293l2.646-2.647a.5.5 0 11.708.708L8.707 8l2.647 2.646a.5.5 0 01-.708.708L8 8.707l-2.646 2.647a.5.5 0 01-.708-.708L7.293 8 4.646 5.354a.5.5 0 010-.708z"/>
+                                </svg>                            
+                            </div> 
+                        </div>                                          
                     </div>
-                    <div id="sources-{{ image.deepfake_image }}" class="source-images flex flex-column align-items-center">
+                        <!-- Right: Source and target images -->
+                    <div id="sources-{{ image.deepfake_image }}" class="source-images flex flex-column align-items-start">
+                        <h5>Source and Target Images:</h5>
                                 <img src="{{ url_for('static', filename='../' + image.source_image) }}" alt="Source Image">
                                 <img src="{{ url_for('static', filename='../' + image.target_image) }}" alt="Target Image">                            
-                    </div>                
+                    </div>   
+                </div>             
             </div>
             {% endfor %}
         </div>
@@ -48,10 +57,25 @@
                 body: JSON.stringify({ image: imageName })
             })
             .then(response => response.json())
-            .then(data => {              
-                document.getElementById('check-' + imageName).style.display = data.result ? 'inline' : 'none';          
-                document.getElementById('cross-' + imageName).style.display = data.result ? 'none' : 'inline';
+            .then(data => {    
+
+                const checkIcon = document.getElementById('check-' + imageName);                         
+                const crossIcon = document.getElementById('cross-' + imageName);    
+                const outerDiv = document.getElementById('outer-' + imageName);                     
+                
+                checkIcon.style.display = data.result ? 'inline' : 'none';
+                crossIcon.style.display = data.result ? 'none' : 'inline'
+                
                 document.getElementById('sources-' + imageName).style.display = data.result ? 'inline' : 'none';
+
+                
+                // Set outer div display based on icon visibility
+                if (checkIcon.style.display === 'inline' || crossIcon.style.display === 'inline') {
+                    outerDiv.style.display = 'inline';
+                } else {
+                    outerDiv.style.display = 'none';
+                } 
+
             });
         }
     </script>
