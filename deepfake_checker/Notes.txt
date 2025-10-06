@@ -1,0 +1,30 @@
+(1) Origin Face:
+
+1. https://pixabay.com/photos/woman-beauty-iran-face-girl-8378634/
+2. https://pixabay.com/photos/girl-child-face-person-kid-young-1107788/
+
+Target Face:
+
+1. https://pixabay.com/photos/viet-nam-dress-old-building-girl-7741018/
+2. https://pixabay.com/photos/child-girl-portrait-happiness-kid-3199624/
+
+(2) Create Deep Fake:
+
+URL: https://deepfakemaker.io/
+
+
+Python Project Structure:
+
+deepfake_checker/
+├── app.py
+├── static/
+│   └── uploads/         # Folder for uploaded images
+
+(3) Run Project
+
+pip install flask
+python app.py
+
+
+(4) Launch URL
+http://127.0.0.1:5000/

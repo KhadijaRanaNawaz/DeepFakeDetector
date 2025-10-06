@@ -1,0 +1,70 @@
+from flask import Flask, request, jsonify, render_template_string
+import os
+import random
+
+app = Flask(__name__)
+UPLOAD_FOLDER = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Simulated DeepFake detection API
+def CheckDeepFake(image_path):
+    return random.choice([True, False])
+
+# HTML template with embedded SVGs and JavaScript
+HTML_TEMPLATE = """
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DeepFake Image Checker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .image-container { margin-bottom: 20px; }
+        .status-icon { width: 24px; height: 24px; display: none; vertical-align: middle; }
+    </style>
+</head>
+<body class="bg-light text-dark p-4">
+    <h1>DeepFake Image Checker</h1>
+    {% for image in images %}
+    <div class="image-container">
+        <img src="{{ url_for('static', filename='uploads/' + image) }}" width="200">
+        <button onclick="checkImage('{{ image }}')">DeepFake Check</button>
+        <svg id="check-{{ image }}" class="status-icon" fill="green" viewBox="0 0 16 16">
+            <path d="M13.485 1.929a.75.75 0 011.06 1.06l-8.25 8.25a.75.75 0 01-1.06 0l-4.25-4.25a.75.75 0 111.06-1.06L6 9.189l7.485-7.26z"/>
+        </svg>
+        <svg id="cross-{{ image }}" class="status-icon" fill="red" viewBox="0 0 16 16">
+            <path d="M4.646 4.646a.5.5 0 01.708 0L8 7.293l2.646-2.647a.5.5 0 11.708.708L8.707 8l2.647 2.646a.5.5 0 01-.708.708L8 8.707l-2.646 2.647a.5.5 0 01-.708-.708L7.293 8 4.646 5.354a.5.5 0 010-.708z"/>
+        </svg>
+    </div>
+    {% endfor %}
+    <script>
+        function checkImage(imageName) {
+            fetch('/check', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ image: imageName })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('check-' + imageName).style.display = data.result ? 'inline' : 'none';
+                document.getElementById('cross-' + imageName).style.display = data.result ? 'none' : 'inline';
+            });
+        }
+    </script>
+</body>
+</html>
+"""
+
+@app.route('/')
+def index():
+    images = os.listdir(app.config['UPLOAD_FOLDER'])
+    return render_template_string(HTML_TEMPLATE, images=images)
+
+@app.route('/check', methods=['POST'])
+def check():
+    image_name = request.json['image']
+    image_path = os.path.join(app.config['UPLOAD_FOLDER'], image_name)
+    result = CheckDeepFake(image_path)
+    return jsonify({'result': result})
+
+if __name__ == '__main__':
+    app.run(debug=True)
