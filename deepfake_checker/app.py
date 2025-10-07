@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify, render_template, url_for
 import os
 import json
 import random
+from deepfake_model import CheckDeepFake
 
 
 app = Flask(__name__)
@@ -14,8 +15,9 @@ with open(CONFIG_FILE, 'r') as f:
 
 
 # Simulated DeepFake detection API
-def CheckDeepFake(image_path):
-    return random.choice([True, False])
+def Check(image_path):
+    return CheckDeepFake(image_path)
+    #return random.choice([True, False])
 
 
 
@@ -27,7 +29,7 @@ def index():
 @app.route('/check', methods=['POST'])
 def check():
     image_name = request.json['image']
-    result = CheckDeepFake(image_name)
+    result = Check(image_name)
     return jsonify({'result': result})
 
 if __name__ == '__main__':

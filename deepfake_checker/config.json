@@ -1,12 +1,17 @@
 [
-    {
-        "deepfake_image": "static/uploads/deepfakeChild.png",
-        "source_image": "static/real/source/child.jpg",
-        "target_image": "static/real/target/child.jpg"
-    },
-    {
-        "deepfake_image": "static/uploads/deepfakeGirl.png",
-        "source_image": "static/real/source/girl.jpg",
-        "target_image": "static/real/target/girl.jpg"
-    }
+  {
+    "deepfake_image": "static/uploads/deepfakeChild.png",
+    "source_image": "static/real/source/child.jpg",
+    "target_image": "static/real/target/child.jpg"
+  },
+  {
+    "deepfake_image": "static/uploads/deepfakeGirl.png",
+    "source_image": "static/real/source/girl.jpg",
+    "target_image": "static/real/target/girl.jpg"
+  },
+  {
+    "deepfake_image": "static/real/source/girl.jpg",
+    "source_image": "static/real/source/girl.jpg",
+    "target_image": "static/real/target/girl.jpg"
+  }
 ]

@@ -30,7 +30,7 @@ python app.py
 http://127.0.0.1:5000/
 
 
-(5) Install Ollama
+(5) Run the Hugging Face model
 
-https://ollama.com/
+Run > pip install transformers torch pillow
 
